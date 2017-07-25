@@ -1,0 +1,29 @@
+Frage: In wie vielen Ländern ist der Interperet aktiv? Welche Interpreten sind in den meisten Ländern aktiv?
+
+
+select
+
+count(t1.artistid) as "Anzahl vertretener Länder",
+--t1.artistid as "Interpreten ID",
+t1.Name as "Interpret"
+ 
+from 
+    (select 
+    
+    albums.artistid , 
+    artists.Name,
+    invoices.BillingCountry 
+
+    from 
+    albums
+
+    inner join artists on albums.Artistid = artists.ArtistId
+    inner join tracks on albums.albumId = tracks.albumid
+    inner join invoice_items on tracks.trackid = invoice_items.trackid
+    inner join invoices on invoices.invoiceid = invoice_items.invoiceid
+
+    group by albums.artistid, invoices.BillingCountry, artists.Name
+    ) as t1
+
+group by t1.artistid, t1.Name
+order by count(t1.artistid) desc
